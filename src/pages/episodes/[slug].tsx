@@ -1,5 +1,6 @@
 import { format, parseISO } from 'date-fns';
-import ptBR from 'date-fns/locale/pt-BR'
+import ptBR from 'date-fns/locale/pt-BR';
+import Head from 'next/head';
 import { GetStaticPaths, GetStaticProps } from 'next';
 import Link from 'next/link'
 import Image from 'next/image'
@@ -9,6 +10,8 @@ import { convertDurationToTimeString } from '../../utils/convertDurationToTimeSt
 
 import styles from './episode.module.scss'
 import { route } from 'next/dist/next-server/server/router';
+import { useContext } from 'react';
+import { PlayerContext, usePlayer } from '../../contexts/PlayerContext';
 
 type Episode = {
     id: string;
@@ -27,8 +30,12 @@ type EpisodeProps = {
 }
 
 export default function Episode({episode}: EpisodeProps) {
+    const { play } = usePlayer();
     return (
         <div className={styles.episode}>
+            <Head>
+                <title>{episode.title} | Podcastr</title>
+            </Head>
             <div className={styles.thumbnailContainer}>
                 <Link href="/">
                     <button type="button">
@@ -37,7 +44,7 @@ export default function Episode({episode}: EpisodeProps) {
                 </Link>
                 <Image width={700} height={160} src={episode.thumbnail} objectFit="cover" />
 
-                <button type="button">
+                <button type="button" onClick={() => play(episode)}>
                     <img src="/images/play.svg" alt="Tocar episódio"/>
                 </button>
             </div>
